@@ -15,7 +15,7 @@ class Converter
   CHANNELS    =     2
   BYTE_FORMAT = LibAO::Byte_Format::AO_FMT_BIG
 
-  def initialize(m4a_file)
+  def initialize(track)
     @quit = false
     @ch1_data = Channel(Bytes).new
     @ch2_data = Channel(Bytes).new
@@ -24,7 +24,7 @@ class Converter
     @ao.open_live
     @cmd = "/usr/bin/ffmpeg"
     @args = %w(-f wav -acodec pcm_s16le -ac 2 -)
-    @args.unshift(m4a_file).unshift "-i"
+    @args.unshift(track).unshift "-i"
     @strip_header = true
   end
 
