@@ -49,16 +49,17 @@ class Converter
 
       while !@quit
         reading = 0
-        int16s = [] of Int16
+        max = 0
         @ch2_data.receive.each_with_index do |byte, idx|
           case idx % 4
           when 0, 2; bytes[0] = byte
           when 1, 3
             bytes[1] = byte
-            int16s << IO::ByteFormat::LittleEndian.decode(Int16, bytes)
+            int16 = IO::ByteFormat::LittleEndian.decode(Int16, bytes)
+            max = int16 if int16 > max
           end
         end
-        db = 20.0 * Math.log(int16s.max.to_f / Int16::MAX)
+        db = 20.0 * Math.log(max.to_f / Int16::MAX)
         -2.step(to: -100, by: -2) { |n| reading += 1 if db > n }
         title = File.basename(@args[1])
         title = title.size > 12 ? title[0..11] + "..." : title
